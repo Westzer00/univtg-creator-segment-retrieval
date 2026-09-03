@@ -1,4 +1,4 @@
-# UniVTG × Most Replayed 기반 크리에이터용 영상 구간 추천
+# 🎬 UniVTG × Most Replayed 기반 크리에이터용 영상 구간 추천 🎬
 
 > **Multimodal Video Segment Retrieval & Evaluation**  
 > 2026.06 ~ 2026.07 · 5인 팀 프로젝트
