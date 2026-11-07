@@ -1,19 +1,23 @@
-name: CSV validation tests
+name: UniVTG CSV and notebook checks
 on:
   push:
     branches: [main]
   pull_request:
 jobs:
-  unit-tests:
+  validation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install test dependencies
-        run: python -m pip install pytest pandas
-      - name: Check CSV validation
+      - name: Install check dependencies
+        run: python -m pip install pytest pandas ipython nbformat
+      - name: Python source syntax
+        run: python -m compileall -q src examples tests scripts
+      - name: CSV and parsing tests
         run: python -m pytest -q tests/
       - name: Run synthetic CSV example
         run: python -m examples.run_csv_demo
+      - name: Validate research notebooks
+        run: python scripts/check_notebooks.py
