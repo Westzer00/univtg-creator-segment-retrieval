@@ -1,5 +1,4 @@
 """Synthetic boundary checks for the published UniVTG CSV adapter (no real videos)."""
-from pathlib import Path
 import pandas as pd
 import pytest
 import src.univtg_csv_adapter as adapter
