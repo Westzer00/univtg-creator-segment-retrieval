@@ -6,6 +6,8 @@
 긴 영상에서 크리에이터가 인트로/하이라이트 후보로 검토할 수 있는 **Top-K 영상 구간**을 추천하기 위해
 Video-Language 모델 **UniVTG**, 영상별 **LLM Query**, YouTube **Most Replayed** 데이터를 활용한 프로젝트입니다.
 
+**이 저장소에서 직접 실행할 수 있는 범위:** CSV 기반 Query·영상 시간 데이터 결합, 실행 설정 검증, 합성 입력 테스트와 평가 노트북의 코드입니다. **실제 영상 추론은 별도 `univtg_preview_v2.zip` 패키지·UniVTG 가중치·영상 자료가 있어야 가능**하며 이 공개 저장소만으로 실행되지 않습니다. [재현 범위 정리](docs/reproduction-gap-20261108.md).
+
 ## 핵심 문제와 분석 결과
 
 - 처음 사용한 모델은 학습 데이터에서는 성능이 높았지만 실제 평가에서는 크게 떨어졌습니다.
@@ -75,7 +77,7 @@ Video
 
 - 관련 논문·선행연구 조사
 - **LLM 기반 Individual Query 생성**
-- UniVTG Retrieval Pipeline 구현
+- UniVTG 검색 실행 파이프라인 구성·실험(원본 실행 패키지는 공개 저장소에 포함하지 않음)
 - Retrieval / Ranking 평가 코드 구현
 - 실험 결과 분석
 - 팀 데모 화면 구성 참여
@@ -85,10 +87,10 @@ Video
 UniVTG의 **Saliency Score**와 **Foreground Score**를 활용해 시간 구간별 관련도를 계산하고,
 여러 Query 결과를 결합해 Top-50 Candidate Pool을 구성한 뒤 Top-10 후보를 Ranking했습니다.
 
-실제 코드:
-- [`notebooks/01_univtg_pipeline.ipynb`](notebooks/01_univtg_pipeline.ipynb)
-- [`notebooks/02_top50_retrieval.ipynb`](notebooks/02_top50_retrieval.ipynb)
-- [`src/univtg_csv_adapter.py`](src/univtg_csv_adapter.py)
+공개 코드와 원본 실행 의존성:
+- [`notebooks/01_univtg_pipeline.ipynb`](notebooks/01_univtg_pipeline.ipynb) — 실험 실행 절차(별도 패키지 필요)
+- [`notebooks/02_top50_retrieval.ipynb`](notebooks/02_top50_retrieval.ipynb) — Top-50 실험·후처리
+- [`src/univtg_csv_adapter.py`](src/univtg_csv_adapter.py) — CSV 검증, 영상 시간·Query 설정 및 실행 계획(합성 데이터로 독립 실행 가능)
 
 ## 6. 반복 재생 데이터는 평가에만 사용
 
@@ -166,7 +168,7 @@ python -m examples.run_csv_demo
 python -m pytest -q tests/
 ```
 
-실제 UniVTG 추론 노트북은 별도 `univtg_preview_v2.zip` 패키지와 공식 모델 가중치, 원본 영상·시간 데이터에 의존합니다. **해당 패키지는 이 저장소에 없으므로 전체 영상 실험은 즉시 재현할 수 없습니다.** CSV 검증 예제와 전체 실험은 별개입니다.
+실제 UniVTG 추론 노트북은 별도 `univtg_preview_v2.zip` 패키지와 공식 모델 가중치, 원본 영상·시간 데이터에 의존합니다. **해당 패키지는 이 저장소에 없으므로 전체 영상 실험은 즉시 재현할 수 없습니다.** CSV 검증 예제와 전체 실험은 별개입니다. 추가한 [경계조건 테스트](tests/test_adapter_edge_cases.py)는 CSV·설정·ffmpeg 명령의 계약만 확인하며 영상 모델의 정확도를 재검증하지 않습니다.
 
 ## 11. 파일 구조
 
@@ -175,6 +177,7 @@ python -m pytest -q tests/
 ├── README.md
 ├── CONTRIBUTION.md
 ├── requirements.txt
+├── scripts/check_notebooks.py
 ├── notebooks/
 │   ├── 01_univtg_pipeline.ipynb
 │   ├── 02_top50_retrieval.ipynb
@@ -184,7 +187,8 @@ python -m pytest -q tests/
 ├── examples/
 │   └── run_csv_demo.py
 ├── tests/
-│   └── test_csv_inputs.py
+│   ├── test_csv_inputs.py
+│   └── test_adapter_edge_cases.py
 ├── .github/workflows/
 │   └── csv-tests.yml
 ├── data/
@@ -194,7 +198,8 @@ python -m pytest -q tests/
 │   └── sample_queries.csv
 ├── docs/
 │   ├── methodology.md
-│   └── followup-reranking.md
+│   ├── followup-reranking.md
+│   └── reproduction-gap-20261108.md
 ├── results/
 │   └── final_metrics.md
 └── third_party/
