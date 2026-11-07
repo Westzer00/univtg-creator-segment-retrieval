@@ -12,11 +12,13 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install check dependencies
-        run: python -m pip install pytest pandas ipython nbformat
+        run: python -m pip install pytest pandas ipython nbformat pytest-cov ruff
+      - name: Static lint (undefined names and unused imports)
+        run: ruff check --select F src examples tests scripts
       - name: Python source syntax
         run: python -m compileall -q src examples tests scripts
       - name: CSV and parsing tests
-        run: python -m pytest -q tests/
+        run: python -m pytest -q tests/ --cov=src --cov-report=term-missing
       - name: Run synthetic CSV example
         run: python -m examples.run_csv_demo
       - name: Validate research notebooks
