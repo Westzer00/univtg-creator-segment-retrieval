@@ -143,6 +143,18 @@ Top-50 Candidate Pool을 이상적으로 재정렬한 Oracle과 비교했습니�
 즉 좋은 후보는 Top-50 안에 존재하지만 최종 Top-10 Ranking에서 충분히 위로 끌어올리지 못했습니다.
 후속 개선 방향을 Candidate 확대보다 **Ranking Feature 개선**으로 좁혔습니다.
 
+## 실행과 재현 범위
+
+CSV 입력 검증과 실행 설정은 **합성 샘플만으로 테스트 가능**합니다.
+
+```bash
+python -m pip install pandas pytest
+python -m examples.run_csv_demo
+python -m pytest -q tests/
+```
+
+실제 UniVTG 추론 노트북은 별도 `univtg_preview_v2.zip` 패키지와 공식 모델 가중치, 원본 영상·시간 데이터에 의존합니다. **해당 패키지는 이 저장소에 없으므로 전체 영상 실험은 즉시 재현할 수 없습니다.** CSV 검증 예제와 전체 실험은 별개입니다.
+
 ## 10. 파일 구조
 
 ```text
@@ -156,8 +168,16 @@ Top-50 Candidate Pool을 이상적으로 재정렬한 Oracle과 비교했습니�
 │   └── 03_most_replayed_evaluation.ipynb
 ├── src/
 │   └── univtg_csv_adapter.py
+├── examples/
+│   └── run_csv_demo.py
+├── tests/
+│   └── test_csv_inputs.py
+├── .github/workflows/
+│   └── csv-tests.yml
 ├── data/
 │   ├── README.md
+│   ├── sample_category_queries.csv
+│   ├── sample_timings.csv
 │   └── sample_queries.csv
 ├── docs/
 │   └── methodology.md

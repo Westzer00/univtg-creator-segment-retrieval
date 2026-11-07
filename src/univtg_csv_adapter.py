@@ -138,6 +138,20 @@ def _to_optional_float(value: Any) -> Optional[float]:
     return float(text)
 
 
+def _parse_review_flag(value: Any) -> bool:
+    """Parse CSV bool values without treating the text 'False' as true."""
+    if value is None or pd.isna(value):
+        return False
+    if isinstance(value, bool):
+        return value
+    normalized = str(value).strip().lower()
+    if normalized in {"", "false", "0", "no", "n", "off"}:
+        return False
+    if normalized in {"true", "1", "yes", "y", "on"}:
+        return True
+    raise ValueError(f"flag_review must be true/false, got {value!r}")
+
+
 def _derive_category_queries(video_frame: pd.DataFrame) -> pd.DataFrame:
     fixed_columns = _query_columns("fixed_query")
     _required_columns(video_frame, ["category", *fixed_columns], "영상 Query")
@@ -189,7 +203,7 @@ def load_pipeline_tables(
         raise ValueError(f"영상 Query CSV에 중복 video_id가 있습니다: {ids}")
 
     if skip_flagged_rows and "flag_review" in video_frame.columns:
-        flagged = video_frame["flag_review"].fillna(False).astype(bool)
+        flagged = video_frame["flag_review"].map(_parse_review_flag)
         if flagged.any():
             print(f"flag_review=True인 {int(flagged.sum())}개 행을 제외합니다.")
             video_frame = video_frame.loc[~flagged].copy()
