@@ -4,6 +4,6 @@
 
 Original repository: https://github.com/showlab/UniVTG
 
-원본 Framework 전체는 본 저장소에 복제하지 않습니다.
+UniVTG 원본은 공식 저장소에서 관리합니다.
 재현 시 공식 Repository와 Checkpoint를 별도로 준비해야 합니다.
 원본 저작권과 License는 UniVTG Repository를 따릅니다.
