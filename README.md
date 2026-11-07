@@ -143,6 +143,19 @@ Top-50 Candidate Pool을 이상적으로 재정렬한 Oracle과 비교했습니�
 즉 좋은 후보는 Top-50 안에 존재하지만 최종 Top-10 Ranking에서 충분히 위로 끌어올리지 못했습니다.
 후속 개선 방향을 Candidate 확대보다 **Ranking Feature 개선**으로 좁혔습니다.
 
+## 10. 후속 재정렬 실험 — Test 172개 영상
+
+초기 프로젝트에서는 Most Replayed를 **검색 단계의 입력이 아닌 평가 지표**로 사용했습니다. 이후 팀의 후속 실험에서는 Train·Validation의 Most Replayed 값을 학습 신호로 활용해 **ExtraTrees 기반 후보 구간 재정렬 모델**을 추가했습니다.
+
+| 방식 | 이전 정렬 nDCG@10 | 학습 기반 재정렬 nDCG@10 |
+|---|---:|---:|
+| Fixed 검색 문장 | 0.3732 | **0.4543** |
+| Individual 검색 문장 | 0.3809 | **0.4300** |
+
+*Test 172개 영상 기준. Test 영상의 Most Replayed는 예측 입력에 미사용(`mr_input_used_rate = 0`). 1,142개 전체 영상의 집계 수치에는 Train·Val 정보가 섞여 있어 Test 성능과 구분.*
+
+[후속 실험 방법·제약](docs/followup-reranking.md) · [평가 지표](results/final_metrics.md)
+
 ## 실행과 재현 범위
 
 CSV 입력 검증과 실행 설정은 **합성 샘플만으로 테스트 가능**합니다.
@@ -155,7 +168,7 @@ python -m pytest -q tests/
 
 실제 UniVTG 추론 노트북은 별도 `univtg_preview_v2.zip` 패키지와 공식 모델 가중치, 원본 영상·시간 데이터에 의존합니다. **해당 패키지는 이 저장소에 없으므로 전체 영상 실험은 즉시 재현할 수 없습니다.** CSV 검증 예제와 전체 실험은 별개입니다.
 
-## 10. 파일 구조
+## 11. 파일 구조
 
 ```text
 .
@@ -180,14 +193,15 @@ python -m pytest -q tests/
 │   ├── sample_timings.csv
 │   └── sample_queries.csv
 ├── docs/
-│   └── methodology.md
+│   ├── methodology.md
+│   └── followup-reranking.md
 ├── results/
 │   └── final_metrics.md
 └── third_party/
     └── UniVTG.md
 ```
 
-## 11. 사용한 공개 모델
+## 12. 사용한 공개 모델
 
 공개 영상 구간 검색 모델 **UniVTG** 사용.
 
@@ -195,7 +209,7 @@ Original Repository: https://github.com/showlab/UniVTG
 
 프로젝트에서 개발한 **입력 변환·후보 검색·순위 선정·평가 코드**를 정리했습니다. UniVTG 원본은 공식 저장소를 참조합니다.
 
-## 12. 데이터·실험 환경
+## 13. 데이터·실험 환경
 
 YouTube 영상·자막·Most Replayed 원본 대신 검색 문장 샘플을 포함했습니다. 전체 실험 실행에는 원본 데이터와 UniVTG 모델 가중치가 별도로 필요합니다.
 
